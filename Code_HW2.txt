@@ -1,0 +1,9 @@
+Implementation Description - Section IV
+
+The analysis script (analysis.js) is a script that interacts with the two deployed GCP instances to measure latency and observe eventual consistency behavior. It uses Node's built-in `http` module to make requests, avoiding any external dependencies.
+
+Part A - Latency Measurement:
+The script sends 10 sequential POST requests to the /register endpoint on each instance, recording the time taken for each request using Date.now() before and after the call. It then does the same for 10 GET requests to the /list endpoint on each instance. After all trials, it calculates and reports the average latency for each endpoint on each instance.
+
+Part B - Eventual Consistency:
+The script runs a loop of 100 iterations. In each iteration, it generates a new username using a combination of an index and a timestamp, sends a POST request to the /register endpoint on Instance A (us-central1), and then immediately sends a GET request to the /list endpoint on Instance B (europe-west1). It checks whether the newly registered username appears in the response and counts the number of times it does not. At the end, it reports the total number of misses out of 100 iterations. In our case, it was 0.

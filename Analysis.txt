@@ -1,0 +1,19 @@
+
+Average Latency Measurements (Part A):
+
+Instance A (us-central1):
+  /register: avg=74.3ms
+  /list:     avg=68.2ms
+
+Instance B (europe-west1):
+  /register: avg=866.3ms
+  /list:     avg=309.0ms
+
+Eventual Consistency Experiment (Part B):
+
+100 iterations: Register on Instance A, immediately list on Instance B.
+Username was NOT found immediately: 0 out of 100 times.
+
+Explanation of findings:
+
+Instance A has much lower latency than Instance B because it is geographically closer to our client machine in the US, while Instance B is in Belgium. The /register endpoint is also slower than /list on both instances because writes to Firestore require stronger consistency guarantees than reads. The eventual consistency experiment showed 0 misses out of 100 iterations, meaning the data was always visible on Instance B immediately after registering on Instance A. This is because the /register call itself takes long enough (~866ms round trip) that Firestore has already replicated the data to europe-west1 by the time the /list request reaches Instance B.
